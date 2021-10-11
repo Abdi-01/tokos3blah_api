@@ -1,5 +1,7 @@
-const adminRouters =require('./adminRouters')
+const adminRouters = require('./adminRouters')
+const userRouters = require('./userRouters')
 
 module.exports = {
-  adminRouters
+  adminRouters,
+  userRouters
 }
