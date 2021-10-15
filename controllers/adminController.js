@@ -7,7 +7,7 @@ module.exports = {
         scriptQuery = `select * from db_user where role = ${db.escape(req.query.role)};`
         }
         db.query(scriptQuery,(err,results)=>{
-        if(err) res.status(500).send(err)
+        if(err) res.status(401).send(err)
         res.status(200).send(results)
         })
     }
