@@ -2,6 +2,7 @@ const { db } = require("../database");
 const { createToken } = require("../helper/createToken");
 const Crypto = require("crypto");
 const transporter = require("../helper/nodemailer");
+const { decriptToken } = require("../helper/createToken");
 
 module.exports = {
 	getData: (req, res) => {
@@ -138,20 +139,84 @@ module.exports = {
 		});
 	},
 	forgotPass: (req, res) => {
+		let user;
 		let scriptQuery = `Select * from db_user where email=${db.escape(
 			req.body.email
 		)}`;
 		db.query(scriptQuery, (err, results) => {
 			if (err) {
 				console.log(err);
-				res.status(200).send({ message: err });
+				res.status(500).send({ message: err });
 			}
 
 			if (results.length <= 0) {
-				res.status(200).send({ message:"Gaada"});
+				console.log(results);
+				res.status(401).send({ message: "email yang anda masukan salah" });
 			} else {
-				res.status(200).send({ message:"ADA"});
+				user = results[0];
+				let insertQuery = `update db_user set verified = "false" where iduser = ${results[0].iduser}`;
+				db.query(insertQuery, (err, results) => {
+					if (err) {
+						res.status(500).send({ message: err });
+					}
+					let { iduser, fullname, email, password, role, verified } = user;
+					// membuat token
+					let token = createToken({
+						iduser,
+						fullname,
+						email,
+						password,
+						role,
+						verified,
+					});
+
+					let mail = {
+						from: `Admin <TokoS3blah@gmail.com>`,
+						to: `${email}`,
+						subject: "Account Verification",
+						html: `<a href='http://localhost:3000/change-password/${token}'>Click here to change your password</a>`,
+					};
+
+					transporter.sendMail(mail, (errMail, resMail) => {
+						if (errMail) {
+							console.log(errMail);
+							res.status(500).send({
+								message: "Registration Failed!",
+								success: false,
+								err: errMail,
+							});
+						}
+						res.status(200).send({
+							message: "Registration Success, Check Your Email!",
+							success: true,
+						});
+					});
+					// res.status(200).send({ message: insertQuery });
+				});
+				//res.status(200).send({ message:results[0]});
 			}
+		});
+	},
+	changePass: (req, res) => {
+		let token = req.body.token;
+		let password = Crypto.createHmac("sha1", "hash123")
+			.update(req.body.password)
+			.digest("hex");
+		let user = decriptToken(token);
+		let scriptQuery = `update db_user set password = ${db.escape(
+			password
+		)} where iduser = ${user.iduser}`;
+		db.query(scriptQuery, (err, result) => {
+			if (err) {
+				res.status(500).send({ message: err });
+			}
+			let insertQuery = `update db_user set verified = "true" where iduser = ${user.iduser}`;
+			db.query(insertQuery, (err, results) => {
+				if (err) {
+					res.status(500).send({ message: err });
+				}
+				res.status(200).send({ message: "keganti woi" });
+			});
 		});
 	},
 };
