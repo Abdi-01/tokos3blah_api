@@ -6,4 +6,7 @@ module.exports = {
       expiresIn: "12h",
     });
   },
+  decriptToken: (token) => {
+    return jwt.verify(token,"private123")
+  }
 };
