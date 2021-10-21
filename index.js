@@ -19,5 +19,4 @@ const { adminRouters } = require("./routers");
 app.use("/users", userRouters);
 app.use("/admin", adminRouters);
 
-
 app.listen(PORT, () => console.log('Api Running :', PORT));
