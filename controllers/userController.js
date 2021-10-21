@@ -219,4 +219,36 @@ module.exports = {
 			});
 		});
 	},
+
+	// Mengambil data user Superadmin & admin
+	getAdmin: (req, res) => {
+		let scripQuery = `select * from db_user JOIN db_warehouse on db_user.id_warehouse = db_warehouse.id_warehouse;;`;
+		db.query(scripQuery, (err, results) => {
+			if (err) res.status(500).send(err);
+			res.status(200).send(results);
+		});
+	},
+
+	addAdmin: (req, res) => {
+		let { fullname, email, password, age, gender, role, id_warehouse } =
+			req.body;
+		let insertQuery = `Insert into db_user values (null,${db.escape(
+			fullname
+		)},${db.escape(email)},${db.escape(password)},${db.escape(age)},${db.escape(
+			gender
+		)},null,${db.escape(role)},"true",null,${db.escape(id_warehouse)})`;
+		console.log(insertQuery);
+		db.query(insertQuery, (err, results) => {
+			if (err) res.status(500).send(err);
+			db.query(
+				`select * from db_user where fullname =${db.escape(fullname)}`,
+				(err2, results2) => {
+					if (err2) res.status(500).send(err2);
+					res
+						.status(200)
+						.send({ message: "penambahan admin berhasil", data: results2 });
+				}
+			);
+		});
+	},
 };
