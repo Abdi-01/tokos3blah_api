@@ -47,9 +47,7 @@ module.exports = {
 		console.log(password);
 		let insertQuery = `Insert into db_user values (null,${db.escape(
 			fullname
-		)},${db.escape(email)},${db.escape(password)},${db.escape(
-			address
-		)},${db.escape(age)},${db.escape(gender)},null, 'user','false',null);`;
+		)},${db.escape(email)},${db.escape(password)},${db.escape(age)},${db.escape(gender)},null, 'user','false',null,null);`;
 		console.log(insertQuery);
 		db.query(insertQuery, (err, results) => {
 			if (err) {
