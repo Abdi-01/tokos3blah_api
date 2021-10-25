@@ -12,7 +12,9 @@ module.exports = {
                   ON I.id_product = P.id_product
                   LEFT JOIN db_warehouse W
                   ON I.id_warehouse = W.id_warehouse    
-                  WHERE I.id_warehouse IN (SELECT U.id_warehouse FROM db_user U WHERE iduser=${req.params.id})`;
+                  WHERE I.id_warehouse IN (SELECT U.id_warehouse FROM db_user U WHERE iduser=${db.escape(
+                    req.params.id
+                  )})`;
 
     db.query(query, (err, result) => {
       if (err) {
@@ -82,8 +84,9 @@ module.exports = {
   },
 
   editProduct: (req, res) => {
-    const qty = req.body.Quantity;
-    let query1 = `UPDATE db_product_warehouse SET ${qty} WHERE id_product_warehouse = ${req.params.id}`;
+    let query1 = `UPDATE db_product_warehouse SET ${db.escape(
+      req.body.Quantity
+    )} WHERE id_product_warehouse = ${db.escape(req.params.id)}`;
     db.query(query1, (err, result) => {
       if (err) {
         console.log(err);
