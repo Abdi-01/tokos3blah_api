@@ -15,14 +15,19 @@ app.use(express.static("public"));
 
 const { userRouters } = require("./routers");
 const { adminRouters } = require("./routers");
+
+const { warehouseRouters } = require("./routers");
 const { ProductRouter } = require("./routers");
 const { HomeRouter } = require("./routers");
 const { SelectRouter } = require("./routers");
 
 app.use("/users", userRouters);
+app.use("/warehouse", warehouseRouters);
 app.use("/admin", adminRouters);
 app.use("/products", ProductRouter);
 app.use("/home", HomeRouter);
 app.use("/select", SelectRouter);
+
+
 
 app.listen(PORT, () => console.log("Api Running :", PORT));

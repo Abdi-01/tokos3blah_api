@@ -222,7 +222,7 @@ module.exports = {
 
 	// Mengambil data user Superadmin & admin
 	getAdmin: (req, res) => {
-		let scripQuery = `select * from db_user JOIN db_warehouse on db_user.id_warehouse = db_warehouse.id_warehouse;;`;
+		let scripQuery = `select * from db_user JOIN db_warehouse on db_user.id_warehouse = db_warehouse.id_warehouse;`;
 		db.query(scripQuery, (err, results) => {
 			if (err) res.status(500).send(err);
 			res.status(200).send(results);
@@ -239,16 +239,55 @@ module.exports = {
 		)},null,${db.escape(role)},"true",null,${db.escape(id_warehouse)})`;
 		console.log(insertQuery);
 		db.query(insertQuery, (err, results) => {
+			console.log(err);
 			if (err) res.status(500).send(err);
 			db.query(
 				`select * from db_user where fullname =${db.escape(fullname)}`,
 				(err2, results2) => {
-					if (err2) res.status(500).send(err2);
+					if (err2) res.status(501).send(err2);
 					res
 						.status(200)
 						.send({ message: "penambahan admin berhasil", data: results2 });
 				}
 			);
+		});
+	},
+
+	editAdmin: (req, res) => {
+		let { fullname, email, password, age, gender, role, id_warehouse, iduser } =
+			req.body;
+		let updateQuery = `update db_user set fullname = ${db.escape(
+			fullname
+		)}, email = ${db.escape(email)}, age =  ${db.escape(
+			age
+		)} where iduser = ${db.escape(iduser)}`;
+		//  let insertQuery = `Update db_user set
+		//(null,${db.escape(
+		// 	fullname
+		// )},${db.escape(email)},${db.escape(password)},${db.escape(age)},${db.escape(
+		// 	gender
+		// )},null,${db.escape(role)},"true",null,${db.escape(id_warehouse)}) where iduser = ${db.escape(iduser)}`;
+		console.log(updateQuery);
+		db.query(updateQuery, (err, results) => {
+			console.log(err);
+			if (err) res.status(500).send(err);
+			db.query(
+				`select * from db_user where fullname =${db.escape(fullname)}`,
+				(err2, results2) => {
+					if (err2) res.status(501).send(err2);
+					res
+						.status(200)
+						.send({ message: "penambahan admin berhasil", data: results2 });
+				}
+			);
+		});
+	},
+	delAdmin: (req, res) => {
+		let { iduser } = req.body;
+		let deleteQuery = `delete from db_user where iduser = ${db.escape(iduser)}`;
+		db.query(deleteQuery, (err, results) => {
+			if (err) res.status(500).send(err);
+			res.status(200).send(results);
 		});
 	},
 };
