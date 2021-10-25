@@ -9,7 +9,9 @@ routers.patch("/verified", auth, userControllers.verification);
 routers.post("/keep-login", auth, userControllers.keepLogin);
 routers.post("/forgot-pass", userControllers.forgotPass);
 routers.post("/change-pass", userControllers.changePass);
-routers.get("/getAdmin", userControllers.getAdmin)
-routers.post("/addAdmin",userControllers.addAdmin)
+routers.get("/getAdmin", userControllers.getAdmin);
+routers.post("/addAdmin", userControllers.addAdmin);
+routers.patch("/edit-admin", userControllers.editAdmin);
+routers.post("/delete-admin", userControllers.delAdmin);
 
 module.exports = routers;

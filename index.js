@@ -15,9 +15,11 @@ app.use(bearerToken());
 
 const { userRouters } = require("./routers");
 const { adminRouters } = require("./routers");
+const { warehouseRouters } = require("./routers");
 
 app.use("/users", userRouters);
 app.use("/users", adminRouters);
+app.use("/warehouse", warehouseRouters);
 
 
 app.listen(PORT, () => console.log('Api Running :', PORT));
