@@ -15,7 +15,13 @@ module.exports = {
       res.status(200).send(results);
     });
   },
-
+  getDataById: (req, res) => {
+    let scriptQuery = `SELECT * FROM db_user where iduser = ${req.params.id}`;
+    db.query(scriptQuery, (err, results) => {
+      if (err) res.status(500).send(err);
+      res.status(200).send(results);
+    });
+  },
 
   editProfile: (req, res) => {
     try {
@@ -43,7 +49,7 @@ module.exports = {
           dataUpdate.push(`${prop} = ${db.escape(data[prop])}`);
         }
 
-        let query1 = `UPDATE FROM db_user SET ${dataUpdate} WHERE iduser = ${req.params.iduser}`;
+        let query1 = `UPDATE db_user SET ${dataUpdate} WHERE iduser = ${req.params.iduser}`;
         db.query(query1, (err, result) => {
           if (err) {
             console.log(err);
@@ -55,7 +61,6 @@ module.exports = {
     } catch (error) {
       console.log(error);
       res.status(500).send(error);
-
     }
   },
 };
