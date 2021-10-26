@@ -1,17 +1,33 @@
-const express = require('express')
-const cors = require('cors')
-const dotenv = require('dotenv')
-dotenv.config()
+const express = require("express");
+const cors = require("cors");
+const bearerToken = require("express-bearer-token");
 
-const PORT = process.env.PORT
-const app = express()
+const dotenv = require("dotenv");
+dotenv.config();
 
-app.use(cors())
-app.use(express.json())
+const PORT = process.env.PORT;
+const app = express();
 
-app.get('/', (req, res) => {
-    res.status(200).send('<h4>Welcome to your-api</h4>')
-})
+app.use(cors());
+app.use(express.json());
+app.use(bearerToken());
+app.use(express.static("public"));
+
+const { userRouters } = require("./routers");
+const { adminRouters } = require("./routers");
+
+const { warehouseRouters } = require("./routers");
+const { ProductRouter } = require("./routers");
+const { HomeRouter } = require("./routers");
+const { SelectRouter } = require("./routers");
+
+app.use("/users", userRouters);
+app.use("/warehouse", warehouseRouters);
+app.use("/admin", adminRouters);
+app.use("/products", ProductRouter);
+app.use("/home", HomeRouter);
+app.use("/select", SelectRouter);
 
 
-app.listen(PORT, () => console.log('Api Running :', PORT));
+
+app.listen(PORT, () => console.log("Api Running :", PORT));
